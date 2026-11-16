@@ -6,22 +6,44 @@ Antedate is a priority registry for ideas and written work on
 [GenLayer](https://www.genlayer.com). An author seals a description with a
 bond: the chain stamps the date and the text stays hidden until the author
 chooses to reveal it. When a later entry looks like a copy, the earlier
-author stakes a challenge, GenLayer validators compare the two texts without
+author stakes a dispute, GenLayer validators compare the two texts without
 seeing dates or names, and the contract derives the verdict and the mark from
 their label and the seal dates.
 
 One contract (`contracts/antedate.py`, ten methods), a Next.js site with a
 `/docs` section, deployed on **GenLayer Studio Next** (chain 61997).
 
-|                     |                                                                                                                              |
-| ------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| Network             | GenLayer Studio Next, chain 61997                                                                                            |
-| Contract            | [0x38E4D9AB56491233E7336c92FAaAA0B336DE0f65](https://explorer-studio-next.genlayer.com/address/0x38E4D9AB56491233E7336c92FAaAA0B336DE0f65) |
-| Verification        | deployed bytes vs this repository: `python3 scripts/verify.py` (hashes agree)                                                 |
-| Live reads          | `node scripts/live-check.mjs` - the site read path against the deployment                                                     |
-| Tests               | 36 passing, offline (`python3 tests/run.py`)                                                                                  |
-| Mutations           | 15 defences broken one at a time, 15 caught (`scripts/mutate.py`)                                                             |
-| Seal parity         | browser and chain agree (`node scripts/hash-parity.mjs`)                                                                      |
+|                 |                                                                                                                                     |
+| --------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| Network         | GenLayer Studio Next, chain 61997 (`0xF22D`)                                                                                         |
+| RPC / Explorer  | studio-dev.genlayer.com/api · explorer-studio-next.genlayer.com                                                                      |
+| Contract        | [`0x38E4D9AB56491233E7336c92FAaAA0B336DE0f65`](https://explorer-studio-next.genlayer.com/address/0x38E4D9AB56491233E7336c92FAaAA0B336DE0f65) |
+| Verification    | `python3 scripts/verify.py` - deployed bytes match this repository (sha256 `4adafac8…31a58f9`, CRLF/LF normalised)                     |
+| Live reads      | `node scripts/live-check.mjs` - the site's read path against the deployment                                                          |
+| Tests           | 36 passing, offline (`python3 tests/run.py`)                                                                                          |
+| Mutations       | 15 defences broken one at a time, 15 caught (`scripts/mutate.py`)                                                                     |
+| Seal parity     | browser and chain agree (`node scripts/hash-parity.mjs`)                                                                              |
+
+## Recent updates
+
+- **Deployment frozen.** The contract address, both source hashes and the
+  newline note are recorded in `contracts/FROZEN.json`; the scripts and the
+  site fall back to it.
+- **Validator fees are estimated on every write.** GenLayer charges
+  consensus fees on top of gas, and a write without them is rejected with
+  `FeeValueMustBeNonZero`. The site now estimates `feeValue` and the
+  distribution at the network's current policy and attaches them to every
+  transaction - seal, reveal, dispute, read, close and withdraw alike.
+- **Disputes are preflighted in the UI.** Every guard the contract enforces -
+  authorship of the earlier entry, both revealed, strict priority, a pair
+  filed once, and a balance that covers the stake plus fees - is checked in
+  the browser before MetaMask opens, explained in plain sentences.
+- **Reveal carries a local seal-parity check.** The browser recomputes
+  `sha256(text|salt|address)` as you type and refuses to send a reveal that
+  the contract would refuse anyway.
+- **Revert reasons survive the wallet.** Deliberate contract refusals are
+  unprefixed from the wallet's error chain and shown as sentences; Studio's
+  bare "execution failed" simulation answers are translated into guidance.
 
 ## How it works
 
@@ -37,12 +59,15 @@ One contract (`contracts/antedate.py`, ten methods), a Next.js site with a
    dates, names or addresses.
 5. **Mark.** The contract computes the verdict in code:
 
-| Verdict  | When                    | Money                                                                                    |
-| -------- | ----------------------- | ---------------------------------------------------------------------------------------- |
-| UPHELD   | SUBSTANTIAL             | stake back, plus B's bond if B was inside its 90 days; B is marked as derived from A      |
-| ADJACENT | PARTIAL                 | stake back, the bond stays, both entries show an adjacency note                           |
-| ABSOLVED | NONE                    | the stake goes to the accused                                                             |
-| MATURED  | 90 days, nothing upheld | the bond returns to its author                                                            |
+| Verdict  | When                    | Money                                                                                        |
+| -------- | ----------------------- | -------------------------------------------------------------------------------------------- |
+| UPHELD   | SUBSTANTIAL             | stake back, plus B's bond if B was inside its 90 days; B is marked as derived from A          |
+| ADJACENT | PARTIAL                 | stake back, the bond stays, both entries show an adjacency note                               |
+| ABSOLVED | NONE                    | the stake goes to the accused                                                                 |
+| MATURED  | 90 days, nothing upheld | the bond returns to its author                                                                |
+
+A dispute nobody can read within 48 hours settles as **STALE**: no model
+runs, the stake returns, and the pair unlocks - so no money waits forever.
 
 Money moves only in `withdraw()`, a top-level transfer to the caller.
 `reveal`, `judge` and `close_entry` only move balances. A test asserts after
@@ -54,6 +79,23 @@ nearly every step that `received == bonds_left + stakes_held + owed + paid`.
 `withdraw`, `get_entry`, `get_dispute`, `list_entries`, `list_marks`.
 The reference is [docs/METHODS.md](docs/METHODS.md).
 
+## The site
+
+- **Registry** - every seal, newest first, with state, bond and marks, filtered
+  by sealed / revealed / marked / matured.
+- **Disputes** - each open pair rendered as TEXT 1 versus TEXT 2, the label and
+  verdict once read, and a button anyone may press to run the read (or to
+  settle a stale one).
+- **Seal desk** - a four-step flow: wallet, text, locally computed seal, bond.
+  Tickets (text + salt) are stored in the visitor's browser and downloadable;
+  nothing else keeps them.
+- **Entry pages** - timeline, marks, and the three action panels (reveal,
+  dispute, close) that appear exactly when the chain state allows them.
+- **Account menu** - balance owed, lifetime earned, and the withdraw call.
+
+The wallet flow: MetaMask on chain 61997, added and switched automatically on
+connect. The site holds no key.
+
 ## Layout
 
 ```
@@ -63,7 +105,7 @@ tests/                   direct tests, a money-invariant fuzz, static source tes
 tests/vectors.json       seal vectors shared with the site
 eval/                    the golden set, results, and samples for manual testing
 scripts/                 chain, deploy, verify, mutate, seed, gen_vectors, hash-parity, live-check
-docs/                    architecture, methods, deployments, testing, mutations, manual testing
+docs/                    architecture, methods, deployments, testing, mutations, manual testing, shipping
 src/                     the Next.js site (app/, components/, lib/)
 ```
 
@@ -88,40 +130,6 @@ Manual testing against the live contract is documented step by step in
 [docs/MANUAL_TESTING.md](docs/MANUAL_TESTING.md), with ready-made texts in
 `eval/samples.json`.
 
-## Ship it: GitHub
-
-```bash
-git init
-git add .
-git commit -m "Antedate: a priority registry on GenLayer Studio Next"
-git branch -M main
-git remote add origin git@github.com:YOUR_HANDLE/antidate.git
-git push -u origin main
-```
-
-## Ship it: Vercel (no database)
-
-The site builds with zero services - no `DATABASE_URL`, no server secrets.
-On Vercel:
-
-1. **Import** the GitHub repository; the framework preset is Next.js.
-2. Build command `npm run build`, install `npm install` - the defaults work.
-3. Set one environment variable (the rest fall back to the frozen record):
-
-| Name                          | Value                                        |
-| ----------------------------- | -------------------------------------------- |
-| `NEXT_PUBLIC_CONTRACT_ADDRESS`  | `0x38E4D9AB56491233E7336c92FAaAA0B336DE0f65`   |
-| `NEXT_PUBLIC_CHAIN_ID`          | `61997` (optional override)                    |
-| `NEXT_PUBLIC_STUDIO_RPC`        | `https://studio-dev.genlayer.com/api` (optional) |
-| `NEXT_PUBLIC_STUDIO_EXPLORER`   | `https://explorer-studio-next.genlayer.com` (optional) |
-
-4. **Deploy.** Reads go straight from the visitor's browser to the GenLayer
-   RPC; writes are signed in the visitor's MetaMask on chain 61997.
-
-Keys never live in this repository. The site holds no key; writes are signed
-in the visitor's wallet (MetaMask on chain 61997). Seal tickets - text and
-salt - live only in the visitor's browser.
-
 ## Changing the contract address
 
 One variable. Set `NEXT_PUBLIC_CONTRACT_ADDRESS` in `.env` (site) or
@@ -134,4 +142,5 @@ Antedate shows who sealed a description first and whether a later one
 reproduces it. It proves neither authorship nor originality, it grants no
 legal rights, and a revealed text is public - so authors should seal a
 description, not a secret. Whether two texts overlap is a judgment, which is
-why the label, both texts and the prompt are all public.
+why the label, both texts and the prompt are all public, and why the verdict
+itself is code.
