@@ -47,16 +47,22 @@ One contract (`contracts/antedate.py`, ten methods), a Next.js site with a
 
 ## How it works
 
-1. **Seal.** `sha256(text|salt|address)` with a bond of at least 2 GEN. The
-   date is the chain time of the transaction.
-2. **Reveal.** The author publishes the text; the contract checks it against
-   the seal. A reveal never changes the date.
-3. **Challenge.** The author of the earlier entry A stakes 5 GEN against a
-   later entry B. Both revealed, A sealed strictly before B, a pair disputed
-   once.
-4. **Read.** Validators compare the two texts, the earlier always as TEXT 1,
-   and agree on one label: `SUBSTANTIAL`, `PARTIAL` or `NONE`. They never see
-   dates, names or addresses.
+1. **Seal.** The browser computes `sha256(text|salt|address)` locally - the
+   text never leaves the machine - and the hash goes on chain with a bond of
+   at least 2 GEN. The date is the chain time of the transaction; the ticket
+   (text + salt) stays in the visitor's browser, downloadable as a file.
+2. **Reveal.** The author publishes text and salt; the contract recomputes
+   the seal and, on a match, makes the text public. A reveal never changes
+   the date. The site recomputes the seal as you type and refuses to send a
+   reveal the contract would refuse.
+3. **Challenge.** The author of the earlier entry A stakes exactly 5 GEN
+   against a later entry B. Both must be revealed, A sealed strictly before
+   B, the pair disputed once. Every guard is preflighted in the UI before
+   MetaMask opens, and validator fees are estimated and attached to the
+   transaction.
+4. **Read.** Anyone presses the button. Validators compare the two texts -
+   the earlier always as TEXT 1 - and agree on one label: `SUBSTANTIAL`,
+   `PARTIAL` or `NONE`. They never see dates, names or addresses.
 5. **Mark.** The contract computes the verdict in code:
 
 | Verdict  | When                    | Money                                                                                        |
@@ -125,6 +131,17 @@ node scripts/live-check.mjs          # read path against chain 61997
 cp .env.example .env                 # NEXT_PUBLIC_CONTRACT_ADDRESS already set
 npm install && npm run build && npm start
 ```
+
+## What the steward should see
+
+After the commands above:
+
+- `tests/run.py` -> "36/36 passing - all green"
+- `scripts/mutate.py` -> "15 caught, 0 escaped"
+- `hash-parity.mjs` -> "5/5 vectors match"
+- `verify.py` -> identical local and chain hashes, "ok"
+- `live-check.mjs` -> three pass lines, live totals
+- the site -> the dark hero, live Registry and Disputes, MetaMask asked for chain 61997
 
 Manual testing against the live contract is documented step by step in
 [docs/MANUAL_TESTING.md](docs/MANUAL_TESTING.md), with ready-made texts in
