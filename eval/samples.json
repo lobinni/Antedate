@@ -1,0 +1,34 @@
+{
+  "purpose": "Ready-made texts for manual testing on Studio Next. Pair S1 with each S2x candidate: seal S1 first from your wallet, reveal it, then seal the candidate from a second account, reveal it, dispute S1 -> S2x with 5 GEN, and run the read from the disputes page.",
+  "reference": {
+    "id": "S1",
+    "text": "A vote guardian for DAOs: a service that watches every live proposal, reads each wallet's past votes, and sends a plain-language nudge twenty-four hours before a vote closes. Distinctive parts: per-wallet vote history, the plain-language rewrite, and the 24-hour reminder window."
+  },
+  "candidates": [
+    {
+      "id": "S2a",
+      "expect": "SUBSTANTIAL",
+      "why": "A reworded copy carrying all three distinctive parts.",
+      "text": "A governance assistant for DAOs that monitors every open proposal, checks how each wallet has voted historically, rewrites the proposal in plain language, and reminds the wallet one day before voting ends."
+    },
+    {
+      "id": "S2b",
+      "expect": "PARTIAL",
+      "why": "Shares the general reminder idea but drops the distinctive parts.",
+      "text": "A DAO notification bot: it pings a Discord channel when a proposal opens and again when it closes, with a link to go vote."
+    },
+    {
+      "id": "S2c",
+      "expect": "NONE",
+      "why": "Same vocabulary, different substance: grant escrow, no reminders, no vote history.",
+      "text": "An escrow vault that holds a DAO grant and releases tranches to a working group only after each milestone vote passes on chain."
+    },
+    {
+      "id": "S2d",
+      "expect": "SUBSTANTIAL",
+      "why": "A translated copy - the label must not care about language.",
+      "text": "Un gardien de vote pour les DAO : un service qui surveille chaque proposition active, lit l'historique de vote de chaque portefeuille, réécrit la proposition en langage simple et envoie un rappel vingt-quatre heures avant la clôture du scrutin."
+    }
+  ],
+  "saltHint": "Use the generated salt from the seal desk. Keep each downloaded ticket; the reveal needs the exact text and salt."
+}

@@ -1,0 +1,2 @@
+# The suites also run with zero dependencies: python3 tests/run.py
+pytest>=8.0

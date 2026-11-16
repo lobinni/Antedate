@@ -1,0 +1,32 @@
+[
+  {
+    "text": "A protocol that pays storage hosts only when a random audit passes.",
+    "salt": "k7f3a1c9b2d84e06",
+    "address": "0x1111111111111111111111111111111111111111",
+    "seal": "d27e927b05ff4ca1b05729c4d3db1c421666a47efa352fba5939a445ee38d1c3"
+  },
+  {
+    "text": "An on-chain newsletter where each issue is unlocked by the previous week's readers.",
+    "salt": "s3cr3t-pepper-01",
+    "address": "0xaAaAaAaaAaAaAaaAaAAAAAAAAaaaAaAaAaaAaaAa",
+    "seal": "95c45df80b3ac57942588a921f549d85513e40de733a431db6abecc33a18545c"
+  },
+  {
+    "text": "Weekly vote summaries for a DAO, written in plain language, with turnout charts.",
+    "salt": "9z8y7x6w5v4u3t2s",
+    "address": "0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "seal": "28674883b672bcf3f3ca52ab734ad5a35ebc037ad3ec973769008816f185dc6b"
+  },
+  {
+    "text": "Text with a bar | inside it, several ||| bars, to prove the join is unambiguous.",
+    "salt": "noBarHere123",
+    "address": "0xCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC",
+    "seal": "8070f7c5ac64e9d3f326ebb750f7636b6b1f45ff8fb6d3231059cc7d12768d04"
+  },
+  {
+    "text": "Một ý tưởng: sàn đấu giá giọng nói cho podcast độc lập.",
+    "salt": "unicode-safe-1",
+    "address": "0xdDddDdDdddDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD",
+    "seal": "f45ba83292f1514e216a2d596d2042127c04f7483819565ad2015ab07d7e32d0"
+  }
+]

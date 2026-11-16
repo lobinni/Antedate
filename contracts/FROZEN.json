@@ -1,0 +1,29 @@
+{
+  "contract": "Antedate",
+  "source": "contracts/antedate.py",
+  "network": {
+    "name": "GenLayer Studio Next",
+    "chainId": 61997,
+    "chainIdHex": "0xF22D",
+    "rpc": "https://studio-dev.genlayer.com/api",
+    "explorer": "https://explorer-studio-next.genlayer.com",
+    "currency": "GEN"
+  },
+  "deployment": {
+    "address": "0x38E4D9AB56491233E7336c92FAaAA0B336DE0f65",
+    "deployTx": "",
+    "deployedAt": "",
+    "sourceSha256": "4adafac8271d4d61dff9a32548fcafb1393745d7bf4a89eb59672fedc31a58f9",
+    "deployedSha256": "1f8d93c929478a1227c0c3e732a4bc1dd8cd2415e635ab9a5e249c3b0b92cbce",
+    "status": "deployed",
+    "note": "Deployed bytes equal contracts/antedate.py after CRLF/LF newline normalization. Verify with: python3 scripts/verify.py. Live read check: node scripts/live-check.mjs."
+  },
+  "parameters": {
+    "minBondGen": 2,
+    "disputeStakeGen": 5,
+    "seasonDays": 90,
+    "judgeWindowHours": 48,
+    "maxTextChars": 1500,
+    "maxSaltChars": 100
+  }
+}

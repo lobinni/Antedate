@@ -1,0 +1,75 @@
+{
+  "set": "antedate-golden-v1",
+  "sealedAt": "2026-02-10T00:00:00Z",
+  "note": "Hashed and timestamped before the first live run. Reference entry R is sealed first; each pair registers its later text from its own account after R, challenges with 5 GEN, and is read by the validators. Held-out pairs are run once and never used to tune the prompt.",
+  "reference": {
+    "id": "R",
+    "text": "A vote guardian for DAOs: a service that watches every live proposal, reads each wallet's past votes, and sends a plain-language nudge twenty-four hours before a vote closes."
+  },
+  "pairs": [
+    {
+      "id": "G1",
+      "expect": "SUBSTANTIAL",
+      "later": "A vote guardian for DAOs: a service that watches every live proposal, reads each wallet's past votes, and sends a plain-language nudge twenty-four hours before a vote closes."
+    },
+    {
+      "id": "G2",
+      "expect": "SUBSTANTIAL",
+      "later": "A watchdog for DAO governance that tracks open proposals, studies how a wallet voted before, and reminds that wallet in simple words a day before voting ends."
+    },
+    {
+      "id": "G3",
+      "expect": "SUBSTANTIAL",
+      "later": "Un gardien de vote pour les DAO : un service qui surveille chaque proposition active, lit les votes passés de chaque portefeuille, et envoie un rappel en langage simple vingt-quatre heures avant la clôture du scrutin."
+    },
+    {
+      "id": "G4",
+      "expect": "SUBSTANTIAL",
+      "later": "A tool that follows live DAO proposals, checks the wallet's voting history, pings the voter in plain language 24 hours before the deadline, and also posts a recap thread after each vote."
+    },
+    {
+      "id": "G5",
+      "expect": "PARTIAL",
+      "later": "A notification bot that tells DAO members when a new proposal opens and when it closes."
+    },
+    {
+      "id": "G6",
+      "expect": "PARTIAL",
+      "later": "A weekly digest that explains what each DAO proposal means in plain language, with a chart of turnout so far."
+    },
+    {
+      "id": "G7",
+      "expect": "NONE",
+      "later": "An escrow vault that releases a grant to a DAO working group only after a milestone vote passes."
+    },
+    {
+      "id": "G8",
+      "expect": "NONE",
+      "later": "A marketplace where podcasters auction thirty-second sponsorship slots to local businesses."
+    },
+    {
+      "id": "G9",
+      "expect": "NONE",
+      "later": "A validator dashboard that charts missed blocks and fee income for a proof-of-stake network."
+    },
+    {
+      "id": "G10",
+      "expect": "SUBSTANTIAL",
+      "later": "For each wallet, look at its voting record, keep an eye on every open DAO proposal, and send a simple heads-up one day before the poll shuts - a governance reminder service."
+    }
+  ],
+  "heldOut": [
+    {
+      "id": "H1",
+      "later": "A monthly governance digest with a turnout chart and one paragraph per proposal."
+    },
+    {
+      "id": "H2",
+      "later": "A weekly vote summary plus a table of how the largest wallets voted, nothing about patterns."
+    },
+    {
+      "id": "H3",
+      "later": "A weekly thread that explains each finished vote in plain language for newcomers."
+    }
+  ]
+}
